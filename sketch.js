@@ -1,5 +1,7 @@
 var bg,bgImg;
 
+var Ammo=1000;
+
 var booster,boosterImg;
 
 var youwin,youwinImg;
@@ -81,7 +83,7 @@ function preload()
  warningsound=loadSound("warningsound.wav");
  gameoversound=loadSound("gameoversound.wav");
  boosterImg=loadImage("booster.png");
- youwinImg=loadImage("you won.png"); 
+ youwinImg=loadImage("you won.png");
 }
 
 function setup() 
@@ -174,23 +176,27 @@ function draw()
    {
      spaceship.visible=true;
      spaceship.velocityY=0;
+      booster.velocityY=0;
      spaceship.collide(invisible1);
      spaceship.collide(invisible2);
      
      if(keyDown(UP_ARROW))
        {
          spaceship.velocityY=-6;
+         booster.velocityY=-6;
        }
      
      if(keyDown(DOWN_ARROW))
        {
          spaceship.velocityY=6;
+         booster.velocityY=6;
        }
      
        if(keyDown("space"))
         {
           if(frameCount%3==0)
            {
+             Ammo=Ammo-2;
              bullet=createSprite(spaceship.x,spaceship.y-30);
              bullet1=createSprite(spaceship.x,spaceship.y+30);
              bullet1.addImage(bulletsImg);
@@ -224,7 +230,7 @@ function draw()
          textFont("BOLD");
          fill("red");
          textSize(30);
-         text("You Lose",260,300);
+         text("You Lose",260,300);        
         } 
      
      if(life<=0 && flag===1)
@@ -233,24 +239,26 @@ function draw()
          flag=0;
        }
   
-  if(frameCount%25===0)
+  if(frameCount%125===0)
    {
      spideralien=createSprite(800);
      spideralien.y=Math.round(random(50,550));
      spideralien.addImage(spiImg);
-     spideralien.velocityX=-3;
+     spideralien.velocityX=-7;
      spideralien.scale=0.2;
      spideralien.lifetime=1000;
+
      SpiderGroup.add(spideralien);
    } 
   
-  if(frameCount%22===0)
+  if(frameCount%122===0)
    {
      bee=createSprite(800);
      bee.y=Math.round(random(50,550));
      bee.addImage(beeImg);
      bee.scale=0.1;
-     bee.velocityX=-4;
+     bee.velocityX=-8; 
+     
      beeGroup.add(bee);
    } 
   
@@ -274,7 +282,7 @@ function draw()
      beeGroup.destroyEach();
      score=score+1
      burstsound.play();
-   } 
+   }   
   
   if(bulletsGroup.isTouching(beeGroup))
    {
@@ -282,7 +290,7 @@ function draw()
      beeGroup.destroyEach();
      score=score+1
      burstsound.play();
-   }
+   } 
      
   if(bulletGroup.isTouching(SpiderGroup))
     {
@@ -299,7 +307,8 @@ function draw()
       burstsound.play();
       score=score+1
     }
-       
+ 
+     
   if(score>=30)
    {
      SpiderGroup.setLifetimeEach(0);
@@ -365,13 +374,13 @@ function draw()
       bulletsGroup.destroyEach();
       SpiderGroup.setLifetimeEach(0);
       beeGroup.setLifetimeEach(0);
-      booster.y=mouseY;
       burstsound.stop();
       firesound.stop();
       dragon.destroy();
       fireGroup.destroyEach();
       booster.addImage(boosterImg);
       booster.visible=true;
+      
       booster.velocityX=4;
       spaceship.velocityX=4;
       youwin.visible=true;
@@ -382,6 +391,15 @@ function draw()
       life=life-19;
       fireGroup.destroyEach();
     }
+     
+   if(Ammo<=0)
+    {
+      bulletsGroup.destroyEach();
+      bulletGroup.destroyEach();
+      bulletsound.stop();
+
+      life=0;
+    } 
      
   if(dragon.isTouching(bulletGroup))
     {
@@ -428,4 +446,7 @@ function draw()
   fill("red");
   textSize(15);
   text("Bosslife:" + dragonLife,400,20)
+  
+  fill("red")
+  text("Total bullets:"+Ammo,150,20);
 }
