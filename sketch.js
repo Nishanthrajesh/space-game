@@ -16,6 +16,8 @@ var Time=0;
 
 var warning,warningImg,warningsound;
 
+var invisible1,invisible2;
+
 var dragon,dragonImg;
 
 var startsound;
@@ -125,6 +127,11 @@ function setup()
   dragon.depth=bg.depth
   dragon.depth=dragon.depth+1;
   
+  invisible1=createSprite(300,20,600,3);
+  invisible1.visible=false;
+  invisible2=createSprite(300,580,600,3);
+  invisible2.visible=false;
+  
   youwin=createSprite(300,300);
   youwin.addImage(youwinImg);
   youwin.visible=false;
@@ -165,8 +172,20 @@ function draw()
      
   if(LEVEL===1)
    {
-     spaceship.y=mouseY;
      spaceship.visible=true;
+     spaceship.velocityY=0;
+     spaceship.collide(invisible1);
+     spaceship.collide(invisible2);
+     
+     if(keyDown(UP_ARROW))
+       {
+         spaceship.velocityY=-6;
+       }
+     
+     if(keyDown(DOWN_ARROW))
+       {
+         spaceship.velocityY=6;
+       }
      
        if(keyDown("space"))
         {
@@ -193,6 +212,7 @@ function draw()
       if(life<=0)
        {
          spaceship.destroy();
+         bulletsound.stop();
          bg.x=10000;
          bulletGroup.destroyEach();
          bulletsGroup.destroyEach();
