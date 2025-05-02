@@ -103,8 +103,8 @@ function setup()
   booster=createSprite(spaceship.x-65,spaceship.y);
   booster.visible=false;
     
-  shootButton = createSprite(width - 70, height - 70, 100, 100);
-  shootButton.shapeColor = color(255, 0, 0);
+  //shootButton = createSprite(width - 70, height - 70, 100, 100);
+  //shootButton.shapeColor = color(255, 0, 0);
   bulletGroup = createGroup();
   bulletsGroup = createGroup();
   beeGroup = createGroup();
@@ -201,16 +201,15 @@ function draw()
          booster.y = ty;
        }
 
-       //Shooting: If player taps the shootButton
        if (touches.length > 0) 
        {
          let tx = touches[0].x;
          let ty = touches[0].y;
 
-         if (tx > shootButton.position.x - shootButton.width / 2 &&
-             tx < shootButton.position.x + shootButton.width / 2 &&
-             ty > shootButton.position.y - shootButton.height / 2 &&
-             ty < shootButton.position.y + shootButton.height / 2)
+         if (tx > spaceship.position.x - spaceship.width / 2 &&
+             tx < spaceship.position.x + spaceship.width / 2 &&
+             ty > spaceship.position.y - spaceship.height / 2 &&
+             ty < spaceship.position.y + spaceship.height / 2)
          {
       
          if (frameCount % 3 === 0 && Ammo > 0)
