@@ -6,7 +6,7 @@ var booster,boosterImg;
 
 var youwin,youwinImg;
 
-var fire,fireImg,fireGroup,firesound;
+var fire,fireImg,fireGroup,firesound,shootButton;
 
 var dragonLife=15;
 
@@ -102,7 +102,9 @@ function setup()
   
   booster=createSprite(spaceship.x-65,spaceship.y);
   booster.visible=false;
-
+    
+  shootButton = createSprite(width - 70, height - 70, 100, 100);
+  shootButton.shapeColor = color(255, 0, 0);
   bulletGroup = createGroup();
   bulletsGroup = createGroup();
   beeGroup = createGroup();
@@ -147,7 +149,7 @@ function draw()
    {
       startspaceship.addImage(startspaceImg);
       startspaceship.scale=0.5;
-     
+     touchStarted()
      if(mousePressedOver(gamestart))
       {
         gamestart.destroy();
@@ -191,6 +193,48 @@ function draw()
          spaceship.velocityY=6;
          booster.velocityY=6;
        }
+
+       if (touches.length > 0) 
+       {
+         let ty = touches[0].y;
+         spaceship.y = ty;
+         booster.y = ty;
+       }
+
+       //Shooting: If player taps the shootButton
+       if (touches.length > 0) 
+       {
+         let tx = touches[0].x;
+         let ty = touches[0].y;
+
+         if (tx > shootButton.position.x - shootButton.width / 2 &&
+             tx < shootButton.position.x + shootButton.width / 2 &&
+             ty > shootButton.position.y - shootButton.height / 2 &&
+             ty < shootButton.position.y + shootButton.height / 2)
+         {
+      
+         if (frameCount % 3 === 0 && Ammo > 0)
+         {
+           Ammo -= 2;
+
+           let bullet = createSprite(spaceship.x, spaceship.y - 30);
+           bullet.addImage(bulletImg);
+           bullet.scale = 0.4;
+           bullet.velocityX = 3;
+           bullet.lifetime = 1000;
+
+           let bullet1 = createSprite(spaceship.x, spaceship.y + 30);
+           bullet1.addImage(bulletsImg);
+           bullet1.scale = 0.4;
+           bullet1.velocityX = 3;
+           bullet1.lifetime = 1000;
+
+           bulletsound.play();
+           bulletGroup.add(bullet);
+           bulletsGroup.add(bullet1);
+         }
+       }
+     }
      
        if(keyDown("space"))
         {
@@ -450,3 +494,28 @@ function draw()
   fill("red")
   text("Total bullets:"+Ammo,150,20);
 }
+function touchStarted() 
+{
+  if (gamestart.visible && touches.length > 0)
+  {
+    // Check if the touch is over the gamestart button
+    if (touches[0].x > gamestart.position.x - gamestart.width / 2 &&
+        touches[0].x < gamestart.position.x + gamestart.width / 2 &&
+        touches[0].y > gamestart.position.y - gamestart.height / 2 &&
+        touches[0].y < gamestart.position.y + gamestart.height / 2)
+    {
+      
+      gamestart.remove();
+
+      startbooster.addImage(startboosterImg);
+      startbooster.visible = true;
+      startbooster.velocityY = -10;
+
+      startspaceship.velocityY = -10;
+
+      rocketsound.play();
+    }
+  }
+  return false; // prevent default scrolling on touch
+}
+
